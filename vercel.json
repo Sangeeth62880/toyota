@@ -1,4 +1,3 @@
 {
-  "framework": "nextjs",
-  "_comment_env_reminders": "Environment variables required on Vercel: (1) NEXT_PUBLIC_SUPABASE_URL, (2) NEXT_PUBLIC_SUPABASE_ANON_KEY"
+  "framework": "nextjs"
 }
