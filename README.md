@@ -1,9 +1,9 @@
 # Toyota Incentive Calculator
-> Built for Nippon Toyota · Technical Internship Assignment R2
+> Built for Nippon Toyota · Technical Internship Assignment 
 
 ## Live Demo
 <!-- TODO: Replace with actual deployed URL and GitHub repo URL -->
-[Live Deployment URL ](toyota-phi-dun.vercel.app)
+Live Deployment URL : https://toyota-phi-dun.vercel.app
 
 ---
 
