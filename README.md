@@ -126,7 +126,7 @@ Create a `.env.local` file in the root directory:
 ```env
 # Supabase Project API Keys (Retrieved from Settings -> API)
 NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 ```
 
 ### 6. Database Setup
