@@ -175,13 +175,17 @@ export default function SalesDashboard({
     <div className="space-y-8 select-none font-sans pb-[80px] md:pb-0 pt-4">
       
       {toastMessage && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-4 py-3 rounded-[4px] shadow-lg animate-bounce font-sans text-[13px] font-semibold text-white bg-slate-900 border border-slate-800">
+        <div
+          className={`fixed top-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-3 rounded-[4px] shadow-[0_8px_30px_rgba(0,0,0,0.12)] border border-[#E5E5E5] border-l-4 font-sans text-[13.5px] font-bold text-[#0A0A0A] bg-white animate-in fade-in slide-in-from-top-4 duration-300 ease-out transition-all max-w-[90%] sm:max-w-md w-max justify-center ${
+            toastMessage.type === "success" ? "border-l-green-600" : "border-l-[#EB0A1E]"
+          }`}
+        >
           {toastMessage.type === "success" ? (
-            <CheckCircle className="w-[16px] h-[16px] text-green-400" />
+            <CheckCircle className="w-[18px] h-[18px] text-green-600 flex-shrink-0" strokeWidth={2.25} />
           ) : (
-            <AlertTriangle className="w-[16px] h-[16px] text-[#EB0A1E]" />
+            <AlertTriangle className="w-[18px] h-[18px] text-[#EB0A1E] flex-shrink-0" strokeWidth={2.25} />
           )}
-          {toastMessage.text}
+          <span className="tracking-wide">{toastMessage.text}</span>
         </div>
       )}
 
