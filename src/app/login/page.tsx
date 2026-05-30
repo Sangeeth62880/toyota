@@ -184,7 +184,7 @@ export default function LoginPage() {
         className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform scale-105"
         style={{
           backgroundImage:
-            "url('https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=1920&q=80')",
+            "url('/login-bg.jpg')",
           transitionDuration: "10000ms",
         }}
       />

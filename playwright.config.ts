@@ -12,7 +12,7 @@ dotenv.config({ path: path.resolve(__dirname, ".env.test") });
  * running across desktop Chromium and mobile Pixel 5 viewports.
  */
 export default defineConfig({
-  testDir: "./e2e",
+  testDir: "./unit-tests",
   timeout: 30_000,
   expect: { timeout: 10_000 },
   fullyParallel: false,
