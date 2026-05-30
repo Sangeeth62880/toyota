@@ -7,7 +7,6 @@ import { z } from "zod";
 import type { CarModel } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-// Zod validation schema conforming to database and endpoint rules
 const carModelSchema = z.object({
   name: z.string().trim().min(1, "Model name is required"),
   variant: z.string().trim().max(100, "Variant name too long").optional(),
@@ -29,46 +28,27 @@ interface CarModelFormModalProps {
   onSave: (data: CarModelFormData) => Promise<void>;
 }
 
-/**
- * Toyota Incentive Portal — Car Model Form Modal.
- *
- * Implements clean administrative forms:
- * - Uses Radix Dialog to provide highly accessible modal envelopes.
- * - Handles Zod-driven schema validation with clear inline error labels.
- * - Supports two image input modes: URL entry and local file upload.
- * - Shows an image preview block matching entering graphics.
- * - Manages cancel, save, and pending states.
- *
- * @param isOpen - Toggles the dialog viewport visibility
- * @param onOpenChange - Event updating display toggles
- * @param initialData - Existing car model state parameters (Edit Mode)
- * @param onSave - Parent execution function handling REST mutation calls
- */
 export default function CarModelFormModal({
   isOpen,
   onOpenChange,
   initialData,
   onSave,
 }: CarModelFormModalProps) {
-  // Input fields
   const [name, setName] = useState("");
   const [variant, setVariant] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [isActive, setIsActive] = useState(true);
 
-  // Image input mode: "url" or "upload"
   const [imageMode, setImageMode] = useState<"url" | "upload">("url");
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Status and errors
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isPending, setIsPending] = useState(false);
   const [isValidUrl, setIsValidUrl] = useState(false);
 
-  // Sync state data on opening or mode transitions
   useEffect(() => {
     if (isOpen) {
       setName(initialData?.name || "");
@@ -80,12 +60,10 @@ export default function CarModelFormModal({
       setIsUploading(false);
       setUploadError(null);
       setDragActive(false);
-      // Default to URL mode if there's already a URL, otherwise upload
       setImageMode(initialData?.image_url ? "url" : "upload");
     }
   }, [isOpen, initialData]);
 
-  // Handle live URL validation checks for image previewing
   useEffect(() => {
     const cleanUrl = imageUrl.trim();
     if (!cleanUrl) {
@@ -100,12 +78,7 @@ export default function CarModelFormModal({
     }
   }, [imageUrl]);
 
-  /**
-   * Uploads a file to the /api/upload endpoint and sets the resulting
-   * public URL as the image_url field value.
-   */
   const handleFileUpload = async (file: File) => {
-    // Client-side validation
     const ACCEPTED = ["image/png", "image/jpeg", "image/webp", "image/svg+xml"];
     if (!ACCEPTED.includes(file.type)) {
       setUploadError("Unsupported format. Use PNG, JPEG, WebP, or SVG.");
@@ -135,7 +108,6 @@ export default function CarModelFormModal({
         return;
       }
 
-      // Set the returned public URL
       setImageUrl(json.data.url);
     } catch {
       setUploadError("Network error during upload");
@@ -144,19 +116,12 @@ export default function CarModelFormModal({
     }
   };
 
-  /**
-   * Handle file input change event.
-   */
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) handleFileUpload(file);
-    // Reset the input so the same file can be re-selected
     e.target.value = "";
   };
 
-  /**
-   * Handle drag and drop events.
-   */
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -176,14 +141,10 @@ export default function CarModelFormModal({
     if (file) handleFileUpload(file);
   };
 
-  /**
-   * Safe submission triggers parsing inputs against Zod configurations.
-   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isPending) return;
 
-    // Parse Zod schema
     const result = carModelSchema.safeParse({
       name,
       variant: variant || undefined,
@@ -223,13 +184,10 @@ export default function CarModelFormModal({
   return (
     <Dialog.Root open={isOpen} onOpenChange={onOpenChange}>
       <Dialog.Portal>
-        {/* Backdrop overlay */}
         <Dialog.Overlay className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm transition-opacity duration-300" />
 
-        {/* Modal form box */}
         <Dialog.Content className="fixed left-[50%] top-[50%] z-50 w-full max-w-[460px] max-h-[90vh] overflow-y-auto -translate-x-[50%] -translate-y-[50%] bg-white rounded-[4px] border border-[#E5E5E5] p-6 shadow-2xl focus:outline-none select-none">
           
-          {/* Header Panel */}
           <div className="flex items-center justify-between border-b border-[#F4F4F4] pb-4 mb-5">
             <Dialog.Title className="font-sans font-bold text-[18px] text-[#0A0A0A]">
               {initialData ? "Edit Car Model" : "Add Car Model"}
@@ -243,9 +201,8 @@ export default function CarModelFormModal({
             Add or edit Toyota car models details inside Nippon Toyota databases.
           </Dialog.Description>
 
-          <form onSubmit={handleSubmit} className="space-y-4 font-sans">
+          <form onSubmit={handleSubmit} className="space-y-4 font-sans" noValidate>
             
-            {/* Input: Model Name */}
             <div>
               <label
                 htmlFor="model-name"
@@ -259,7 +216,7 @@ export default function CarModelFormModal({
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 disabled={isPending}
-                placeholder="e.g. Fortuner, Camry"
+                placeholder="Model Name (e.g. Fortuner, Camry)"
                 className={`w-full h-[40px] px-3 text-[13px] text-[#0A0A0A] placeholder-[#9CA3AF] bg-white border ${
                   errors.name ? "border-[#EB0A1E]" : "border-[#E0E0E0]"
                 } rounded-[4px] transition-colors focus:border-[#EB0A1E] focus:ring-1 focus:ring-[#EB0A1E] outline-none disabled:opacity-50`}
@@ -272,7 +229,6 @@ export default function CarModelFormModal({
               )}
             </div>
 
-            {/* Input: Variant */}
             <div>
               <label
                 htmlFor="variant"
@@ -296,13 +252,11 @@ export default function CarModelFormModal({
               )}
             </div>
 
-            {/* Image Input Section */}
             <div>
               <label className="block text-[12px] font-bold text-[#0A0A0A] uppercase tracking-wider mb-2">
                 Model Image
               </label>
 
-              {/* Tab Switcher */}
               <div className="flex gap-0 mb-3 border border-[#E0E0E0] rounded-[4px] overflow-hidden">
                 <button
                   type="button"
@@ -332,10 +286,8 @@ export default function CarModelFormModal({
                 </button>
               </div>
 
-              {/* Upload Mode */}
               {imageMode === "upload" && (
                 <div>
-                  {/* Hidden file input */}
                   <input
                     ref={fileInputRef}
                     type="file"
@@ -345,7 +297,6 @@ export default function CarModelFormModal({
                     disabled={isPending || isUploading}
                   />
 
-                  {/* Drop zone */}
                   <div
                     onDragEnter={handleDrag}
                     onDragLeave={handleDrag}
@@ -380,7 +331,6 @@ export default function CarModelFormModal({
                     )}
                   </div>
 
-                  {/* Upload error */}
                   {uploadError && (
                     <p className="text-[12px] text-[#EB0A1E] font-medium mt-1.5 leading-tight">
                       {uploadError}
@@ -389,7 +339,6 @@ export default function CarModelFormModal({
                 </div>
               )}
 
-              {/* URL Mode */}
               {imageMode === "url" && (
                 <div>
                   <input
@@ -412,7 +361,6 @@ export default function CarModelFormModal({
               )}
             </div>
 
-            {/* Image Preview Window */}
             {isValidUrl && (
               <div className="space-y-1.5">
                 <span className="block text-[11px] font-bold text-[#767676] uppercase tracking-wide">
@@ -429,7 +377,6 @@ export default function CarModelFormModal({
               </div>
             )}
 
-            {/* Uploaded image indicator (when in upload mode and URL is set) */}
             {imageMode === "upload" && imageUrl && !isUploading && (
               <div className="flex items-center gap-2 px-3 py-2 bg-[#E6F4EA] border border-[#C5E8CF] rounded-[4px]">
                 <ImageIcon className="w-4 h-4 text-[#137333] flex-shrink-0" />
@@ -449,7 +396,6 @@ export default function CarModelFormModal({
               </div>
             )}
 
-            {/* Input: Active Status Switch (Only for existing models edit) */}
             {initialData && (
               <div className="flex items-center justify-between py-2 border-y border-[#F4F4F4]">
                 <div>
@@ -478,7 +424,6 @@ export default function CarModelFormModal({
               </div>
             )}
 
-            {/* Bottom Actions Row */}
             <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#F4F4F4] mt-6">
               <Dialog.Close
                 type="button"

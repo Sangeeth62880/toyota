@@ -2,20 +2,9 @@ import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 
-/**
- * Toyota Incentive Portal — Administrative Sales Officers Management Page.
- *
- * Implements the full-fledged admin panel list:
- * - Fetches all officers from the public.user_roles profile database.
- * - Resolves the current month's sales metrics securely in-memory.
- * - Displays a high-contrast automotive industrial data table:
- *   Full Name | Email | Joined Date | This Month's Sales
- * - Includes search-free clean layout with standard Toyota sharp borders and 4px corners.
- */
 export default async function AdminOfficersPage() {
   const supabase = await createClient();
 
-  // 1. Fetch all sales officers
   const { data: officersRes } = await supabase
     .from("user_roles")
     .select("user_id, full_name, email, created_at")
@@ -24,7 +13,6 @@ export default async function AdminOfficersPage() {
 
   const officers = officersRes || [];
 
-  // 2. Fetch current month's sales entries
   const now = new Date();
   const year = now.getFullYear();
   const month = String(now.getMonth() + 1).padStart(2, "0");
@@ -37,7 +25,6 @@ export default async function AdminOfficersPage() {
 
   const sales = salesRes || [];
 
-  // 3. Compute group metrics in-memory for rock-solid runtime safety
   const salesMap = new Map<string, number>();
   sales.forEach((s) => {
     const currentTotal = salesMap.get(s.officer_id) || 0;
@@ -51,7 +38,7 @@ export default async function AdminOfficersPage() {
 
   return (
     <div className="space-y-8 select-none font-sans">
-      {/* 2-Column Heading Header */}
+
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4">
         <div>
           <h1 className="text-[32px] font-extrabold text-[#0A0A0A] tracking-tight leading-none">
@@ -71,7 +58,6 @@ export default async function AdminOfficersPage() {
         </div>
       </div>
 
-      {/* Main Table Card Layout */}
       <div className="bg-white border border-[#E5E5E5] rounded-[4px] overflow-hidden shadow-sm">
         <div className="p-6 border-b border-[#E5E5E5] bg-white flex justify-between items-center">
           <h2 className="font-sans font-bold text-[14px] text-[#0A0A0A] uppercase tracking-wider">

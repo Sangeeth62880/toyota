@@ -29,12 +29,6 @@ const ACCEPTED_TYPES = [
 ];
 const BUCKET_NAME = "car-images";
 
-/**
- * POST /api/upload
- *
- * Accepts a multipart form upload, stores it in Supabase Storage,
- * and returns the public URL for the uploaded asset.
- */
 export async function POST(request: NextRequest) {
   try {
     const { supabase, user } = await getAuthenticatedUser();

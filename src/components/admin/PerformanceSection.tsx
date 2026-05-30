@@ -1,8 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
 
-/**
- * Pulse Loader Skeleton for the Performance Section.
- */
 export function PerformanceSkeleton() {
   return (
     <div className="bg-white border border-[#E5E5E5] rounded-[4px] p-6 shadow-sm animate-pulse">
@@ -20,30 +17,19 @@ export function PerformanceSkeleton() {
   );
 }
 
-/**
- * PerformanceSection Component.
- *
- * Displays car model sales volume and market share breakdown.
- * - Table header: Car Model | Units Sold | Share (% of total)
- * - Custom pure CSS/Tailwind thin inline red progress bar indicators.
- * - Shows an empty state block when monthly records are zero.
- */
 export default async function PerformanceSection() {
   const supabase = await createClient();
 
-  // Compute current month first-day string "YYYY-MM-01"
   const now = new Date();
   const year = now.getFullYear();
   const month = String(now.getMonth() + 1).padStart(2, "0");
   const monthString = `${year}-${month}-01`;
 
-  // Fetch active car models
   const modelsPromise = supabase
     .from("car_models")
     .select("id, name, variant")
     .eq("is_active", true);
 
-  // Fetch sales logged for current month
   const salesPromise = supabase
     .from("sales_entries")
     .select(`
@@ -78,13 +64,11 @@ export default async function PerformanceSection() {
     );
   }
 
-  // Aggregate sales breakdown in-memory
   const breakdownMap: Record<
     string,
     { name: string; variant: string; units: number }
   > = {};
 
-  // Initialize active models
   activeModels.forEach((m) => {
     breakdownMap[m.id] = {
       name: m.name,
@@ -93,7 +77,6 @@ export default async function PerformanceSection() {
     };
   });
 
-  // Sum units from logged entries
   sales.forEach((s) => {
     const modelId = s.car_model_id;
     const units = s.units_sold;
@@ -117,7 +100,6 @@ export default async function PerformanceSection() {
     }
   });
 
-  // Calculate percentage and sort
   const breakdown = Object.entries(breakdownMap)
     .map(([id, info]) => {
       const share = totalSales > 0 ? (info.units / totalSales) * 100 : 0;
@@ -144,7 +126,6 @@ export default async function PerformanceSection() {
           const percentage = maxUnitsVal > 0 ? (row.units_sold / maxUnitsVal) * 100 : 0;
           return (
             <div key={row.id} className="flex items-center justify-between gap-4 text-[13px] font-sans">
-              {/* Model details (left) */}
               <div className="w-[140px] sm:w-[180px] flex-shrink-0 min-w-0">
                 <p className="font-bold text-[#0A0A0A] truncate">{row.name}</p>
                 {row.variant && (
@@ -154,7 +135,6 @@ export default async function PerformanceSection() {
                 )}
               </div>
 
-              {/* Custom horizontal progress bar indicator */}
               <div className="flex-1 h-[8px] bg-[#F4F4F4] rounded-[2px] overflow-hidden">
                 <div
                   className="h-full bg-[#EB0A1E] transition-all duration-500 rounded-[2px]"
@@ -162,7 +142,6 @@ export default async function PerformanceSection() {
                 />
               </div>
 
-              {/* Absolute units sold count (right) */}
               <div className="w-[56px] text-right font-extrabold text-[14px] text-[#0A0A0A] flex-shrink-0">
                 {row.units_sold} <span className="text-[13px] text-[#555555] font-bold uppercase tracking-wide">qty</span>
               </div>

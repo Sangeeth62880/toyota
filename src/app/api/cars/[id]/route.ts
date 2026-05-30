@@ -27,13 +27,6 @@ import {
 
 type RouteContext = { params: Promise<{ id: string }> };
 
-/**
- * PUT /api/cars/[id]
- *
- * Updates an existing car model. Admin only.
- * Only provided fields are updated (partial patch).
- * Validates name is non-empty if provided.
- */
 export async function PUT(request: NextRequest, context: RouteContext) {
   try {
     const { supabase, user } = await getAuthenticatedUser();
@@ -87,13 +80,6 @@ export async function PUT(request: NextRequest, context: RouteContext) {
   }
 }
 
-/**
- * DELETE /api/cars/[id]
- *
- * Deletes a car model physically from the database.
- * Admin only. Catches foreign key constraint violation (error code 23503)
- * if referencing sales entries exist.
- */
 export async function DELETE(_request: NextRequest, context: RouteContext) {
   try {
     const { supabase, user } = await getAuthenticatedUser();

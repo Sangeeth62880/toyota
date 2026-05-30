@@ -31,14 +31,6 @@ import {
   respond,
 } from "@/lib/api-helpers";
 
-/**
- * GET /api/officers
- *
- * Returns all users with role='officer'. Admin only.
- *
- * Used by the admin dashboard to display the officer list,
- * view individual performance, and manage team members.
- */
 export async function GET() {
   try {
     const { supabase, user } = await getAuthenticatedUser();

@@ -1,13 +1,3 @@
-// ============================================================================
-// Toyota Incentive Portal — Incentive Calculation Tests
-// ============================================================================
-//
-// Comprehensive test suite for the pure incentive calculation engine.
-// Covers happy paths, edge cases, boundary conditions, and helper functions.
-//
-// Run: npx vitest run src/lib/calculateIncentive.test.ts
-// ============================================================================
-
 import { describe, expect, it } from "vitest";
 
 import type { CarSale, IncentiveSlab } from "@/lib/types";
@@ -18,9 +8,6 @@ import {
   getSlabForUnits,
 } from "./calculateIncentive";
 
-// ─── Test Fixtures ──────────────────────────────────────────────────────────
-
-/** Standard 3-tier slab configuration matching DEFAULT_SLABS in constants.ts */
 const STANDARD_SLABS: IncentiveSlab[] = [
   {
     id: "slab-1",
@@ -45,10 +32,8 @@ const STANDARD_SLABS: IncentiveSlab[] = [
   },
 ];
 
-/** Same slabs but in reverse order — tests that sorting works */
 const REVERSE_SLABS: IncentiveSlab[] = [...STANDARD_SLABS].reverse();
 
-/** Single open-ended slab (no tiers, just a flat rate) */
 const SINGLE_SLAB: IncentiveSlab[] = [
   {
     id: "slab-only",
@@ -59,7 +44,6 @@ const SINGLE_SLAB: IncentiveSlab[] = [
   },
 ];
 
-/** Helper to create a CarSale fixture */
 function makeSale(
   car_model_id: string,
   car_name: string,
@@ -67,8 +51,6 @@ function makeSale(
 ): CarSale {
   return { car_model_id, car_name, image_url: "", units_sold };
 }
-
-// ─── getSlabForUnits() ──────────────────────────────────────────────────────
 
 describe("getSlabForUnits", () => {
   it("returns null when units is 0", () => {
@@ -127,8 +109,6 @@ describe("getSlabForUnits", () => {
   });
 });
 
-// ─── getProgressToNextTier() ────────────────────────────────────────────────
-
 describe("getProgressToNextTier", () => {
   it("returns 0 when units is 0 (no qualifying slab)", () => {
     expect(getProgressToNextTier(0, STANDARD_SLABS)).toBe(0);
@@ -176,10 +156,7 @@ describe("getProgressToNextTier", () => {
   });
 });
 
-// ─── calculateIncentive() ───────────────────────────────────────────────────
-
 describe("calculateIncentive", () => {
-  // ── Happy path ──────────────────────────────────────────────────────────
 
   it("calculates correct payout for tier 1 (2 units total)", () => {
     const sales = [
@@ -218,8 +195,6 @@ describe("calculateIncentive", () => {
     expect(result.payout).toBe(35000); // 10 × ₹3500
   });
 
-  // ── Boundary conditions ─────────────────────────────────────────────────
-
   it("picks the higher slab when total_units is exactly on a boundary (4 units)", () => {
     const sales = [makeSale("a", "Fortuner", 4)];
     const result = calculateIncentive(sales, STANDARD_SLABS);
@@ -237,8 +212,6 @@ describe("calculateIncentive", () => {
     expect(result.active_slab.id).toBe("slab-3");
     expect(result.payout).toBe(28000); // 8 × ₹3500
   });
-
-  // ── Next tier calculations ──────────────────────────────────────────────
 
   it("correctly calculates units_to_next_tier (2 units in tier 1 → 2 more to tier 2)", () => {
     const sales = [makeSale("a", "Fortuner", 2)];
@@ -272,8 +245,6 @@ describe("calculateIncentive", () => {
     expect(result.units_to_next_tier).toBe(0);
     expect(result.bonus_at_next_tier).toBe(0);
   });
-
-  // ── Edge cases ──────────────────────────────────────────────────────────
 
   it("handles empty sales array — payout 0, sentinel slab", () => {
     const result = calculateIncentive([], STANDARD_SLABS);
@@ -312,8 +283,6 @@ describe("calculateIncentive", () => {
     expect(result.payout).toBe(10000);
   });
 
-  // ── Breakdown preservation ──────────────────────────────────────────────
-
   it("preserves the original sales array as breakdown", () => {
     const sales = [
       makeSale("a", "Fortuner", 3),
@@ -328,8 +297,6 @@ describe("calculateIncentive", () => {
     expect(result.breakdown[1].units_sold).toBe(2);
   });
 
-  // ── Single sale ─────────────────────────────────────────────────────────
-
   it("works with a single car sale entry", () => {
     const sales = [makeSale("a", "Fortuner", 1)];
     const result = calculateIncentive(sales, STANDARD_SLABS);
@@ -340,8 +307,6 @@ describe("calculateIncentive", () => {
     expect(result.units_to_next_tier).toBe(3); // need 4, have 1
   });
 
-  // ── When 0 units but next tier guidance is provided ─────────────────────
-
   it("provides next tier guidance even when current payout is 0", () => {
     const result = calculateIncentive([], STANDARD_SLABS);
 
@@ -350,8 +315,6 @@ describe("calculateIncentive", () => {
     // Bonus at next tier: 1 × ₹1000 - 0 = ₹1000
     expect(result.bonus_at_next_tier).toBe(1000);
   });
-
-  // ── Large numbers ──────────────────────────────────────────────────────
 
   it("handles large unit counts correctly (50 units at top tier)", () => {
     const sales = [makeSale("a", "Fortuner", 50)];

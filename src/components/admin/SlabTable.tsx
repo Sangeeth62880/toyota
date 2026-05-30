@@ -11,39 +11,21 @@ interface SlabTableProps {
   initialSlabs: IncentiveSlab[];
 }
 
-/**
- * SlabTable Component.
- *
- * Implements the master configuration workspace:
- * - Displays a live visual "Slab Ladder" horizontal stepped diagram.
- * - Highlights the highest reward tier (most generous) dynamically.
- * - Houses the custom styled tables listing tiers, ranges, rates, and annual impact values.
- * - Includes a quick-add "Add Tier" trigger button appending editable rows inline.
- * - Coordinates POST/PUT/DELETE API endpoints for database sync.
- *
- * @param initialSlabs - List of slabs loaded on the server
- */
 export default function SlabTable({ initialSlabs }: SlabTableProps) {
   const router = useRouter();
   const [slabs, setSlabs] = useState<IncentiveSlab[]>(initialSlabs);
   const [newSlab, setNewSlab] = useState<IncentiveSlab | null>(null);
 
-  // Sync with server-side page caches
   useEffect(() => {
     setSlabs(initialSlabs);
   }, [initialSlabs]);
 
-  // Find most generous reward rate to highlight the active tier in red
   const maxIncentiveRate =
     slabs.length > 0 ? Math.max(...slabs.map((s) => s.incentive_per_unit)) : 0;
 
-  /**
-   * Action: Adds an empty, pre-editing tier row at the bottom of the grid.
-   */
   const handleAddTierClick = () => {
     if (newSlab) return;
 
-    // Calculate default min_units based on highest existing max units
     let nextMinUnits = 1;
     if (slabs.length > 0) {
       const highestSlab = slabs[slabs.length - 1];
@@ -64,9 +46,6 @@ export default function SlabTable({ initialSlabs }: SlabTableProps) {
     setNewSlab(tempNewSlab);
   };
 
-  /**
-   * API Action: POST new slab tier to backend.
-   */
   const handleCreateSlab = async (
     _id: string,
     min: number,
@@ -91,13 +70,11 @@ export default function SlabTable({ initialSlabs }: SlabTableProps) {
       const json = await res.json();
       const createdSlab = json.data;
 
-      // Update state and clear temporary rows
       setSlabs((prev) =>
         [...prev, createdSlab].sort((a, b) => a.min_units - b.min_units)
       );
       setNewSlab(null);
 
-      // Revalidate cache
       router.refresh();
       return true;
     } catch (err) {
@@ -106,9 +83,6 @@ export default function SlabTable({ initialSlabs }: SlabTableProps) {
     }
   };
 
-  /**
-   * API Action: PUT existing slab updates to backend.
-   */
   const handleUpdateSlab = async (
     id: string,
     min: number,
@@ -133,14 +107,12 @@ export default function SlabTable({ initialSlabs }: SlabTableProps) {
       const json = await res.json();
       const updatedSlab = json.data;
 
-      // Update state
       setSlabs((prev) =>
         prev
           .map((s) => (s.id === id ? updatedSlab : s))
           .sort((a, b) => a.min_units - b.min_units)
       );
 
-      // Revalidate cache
       router.refresh();
       return true;
     } catch (err) {
@@ -149,9 +121,6 @@ export default function SlabTable({ initialSlabs }: SlabTableProps) {
     }
   };
 
-  /**
-   * API Action: DELETE slab from database.
-   */
   const handleDeleteSlab = async (id: string): Promise<boolean> => {
     try {
       const res = await fetch(`/api/slabs/${id}`, {
@@ -162,10 +131,8 @@ export default function SlabTable({ initialSlabs }: SlabTableProps) {
         throw new Error("Failed to delete slab");
       }
 
-      // Remove from local states
       setSlabs((prev) => prev.filter((s) => s.id !== id));
 
-      // Revalidate cache
       router.refresh();
       return true;
     } catch (err) {
@@ -177,9 +144,6 @@ export default function SlabTable({ initialSlabs }: SlabTableProps) {
   return (
     <div className="space-y-8 select-none font-sans">
       
-      {/* ──────────────────────────────────────────────────────────── */}
-      {/* 1. VISUAL STEPPED SLAB LADDER */}
-      {/* ──────────────────────────────────────────────────────────── */}
       {slabs.length > 0 && (
         <div className="space-y-3">
           <span className="block text-[14px] font-bold text-[#555555] uppercase tracking-wider">
@@ -192,7 +156,6 @@ export default function SlabTable({ initialSlabs }: SlabTableProps) {
 
               return (
                 <div key={slab.id} className="flex-1 flex items-center w-full">
-                  {/* Stepped block box */}
                   <div
                     className={cn(
                       "flex-1 p-5 rounded-[4px] flex flex-col justify-center min-h-[110px] transition-all bg-white",
@@ -227,7 +190,6 @@ export default function SlabTable({ initialSlabs }: SlabTableProps) {
                     </span>
                   </div>
 
-                  {/* Connecting Chevrons */}
                   {!isLast && (
                     <div className="hidden md:flex items-center justify-center px-2">
                       <ChevronRight className="w-5 h-5 text-[#9CA3AF] stroke-[2]" />
@@ -240,9 +202,6 @@ export default function SlabTable({ initialSlabs }: SlabTableProps) {
         </div>
       )}
 
-      {/* ──────────────────────────────────────────────────────────── */}
-      {/* 2. INLINE SLAB TABLE EDITOR */}
-      {/* ──────────────────────────────────────────────────────────── */}
       <div className="bg-white border border-[#E5E5E5] rounded-[4px] overflow-hidden shadow-sm">
         {slabs.length === 0 && !newSlab ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
@@ -265,7 +224,6 @@ export default function SlabTable({ initialSlabs }: SlabTableProps) {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#E5E5E5]">
-                {/* Existing database slabs */}
                 {slabs.map((slab, idx) => (
                   <SlabRow
                     key={slab.id}
@@ -277,7 +235,6 @@ export default function SlabTable({ initialSlabs }: SlabTableProps) {
                   />
                 ))}
 
-                {/* Inline newly created slab */}
                 {newSlab && (
                   <SlabRow
                     slab={newSlab}
@@ -295,9 +252,6 @@ export default function SlabTable({ initialSlabs }: SlabTableProps) {
         )}
       </div>
 
-      {/* ──────────────────────────────────────────────────────────── */}
-      {/* 3. WORKSPACE FOOTER ACTIONS */}
-      {/* ──────────────────────────────────────────────────────────── */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
         <p className="text-[13px] text-[#606060] leading-snug italic max-w-[460px]">
           * Annual Impact is an estimation based on the mathematical average of the volume limits

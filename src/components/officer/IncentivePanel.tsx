@@ -16,24 +16,6 @@ interface IncentivePanelProps {
   onSave: () => Promise<void>;
 }
 
-/**
- * Toyota Incentive Portal — Live Payout Display Panel.
- *
- * Implements the live payout summary sidebar:
- * - Sticky placement alignment (`sticky top-6`) on desktop.
- * - Section 1: Dynamic "This Month's Incentive" payout amount in ₹40px, scaling 1.05x on change.
- * - Section 2: Embeds SlabLadder showing structured payout milestones.
- * - Section 3: Displays breakdowns of logged sales, itemized per vehicle.
- * - Section 4: Provides the next-tier nudge (progress bar + amber banner) dynamically.
- * - Bottom: Full width brand button (44px height) deactivating secure historical logs.
- *
- * @param result - The aggregated math payout computations
- * @param slabs - Sorted incentive slabs configuration list
- * @param carModels - Full car catalog parameters
- * @param isSaving - Triggers loading spinners on save progress
- * @param readOnly - Restricts submission button during locked months
- * @param onSave - Save event dispatcher
- */
 export default function IncentivePanel({
   result,
   slabs,
@@ -46,7 +28,6 @@ export default function IncentivePanel({
   const [displayPayout, setDisplayPayout] = useState(0);
   const [isSaved, setIsSaved] = useState(false);
 
-  // Trigger count up and scale bounce animation on payout updates
   useEffect(() => {
     setAnimate(true);
     const timeout = setTimeout(() => setAnimate(false), 200);
@@ -58,7 +39,7 @@ export default function IncentivePanel({
       return () => clearTimeout(timeout);
     }
 
-    const duration = 600; // ms
+    const duration = 600;
     let startTimestamp: number | null = null;
     let animationFrameId: number;
 
@@ -84,7 +65,6 @@ export default function IncentivePanel({
   const hasSales = result.breakdown.some((s) => s.units_sold > 0);
   const activeSlabId = result.active_slab?.id || "";
 
-  // Progress to next tier
   const progressPercent = getProgressToNextTier(result.total_units, slabs);
   const isTopTier = result.units_to_next_tier === 0 || progressPercent === 100;
 
@@ -96,16 +76,12 @@ export default function IncentivePanel({
         setIsSaved(false);
       }, 2000);
     } catch (e) {
-      // Allow error to propagate naturally or let toaster handle it
     }
   };
 
   return (
     <aside className="sticky top-6 w-full bg-white border border-[#E5E5E5] rounded-[4px] p-7 shadow-sm select-none font-sans flex flex-col gap-6">
       
-      {/* ──────────────────────────────────────────────────────────── */}
-      {/* SECTION 1: TOTAL MONTH PAYOUT DISPLAY */}
-      {/* ──────────────────────────────────────────────────────────── */}
       <div className="pb-1">
         <span className="block text-[11px] font-bold text-[#767676] uppercase tracking-wider mb-1">
           This Month's Incentive
@@ -124,16 +100,10 @@ export default function IncentivePanel({
 
       <hr className="border-[#E5E5E5] w-full" />
 
-      {/* ──────────────────────────────────────────────────────────── */}
-      {/* SECTION 2: VERTICAL SLAB LADDER */}
-      {/* ──────────────────────────────────────────────────────────── */}
       <SlabLadder slabs={slabs} activeSlabId={activeSlabId} />
 
       <hr className="border-[#E5E5E5] w-full" />
 
-      {/* ──────────────────────────────────────────────────────────── */}
-      {/* SECTION 3: DETAILED VEHICLE BREAKDOWN */}
-      {/* ──────────────────────────────────────────────────────────── */}
       <div className="pt-1">
         <span className="block text-[11px] font-bold text-[#767676] uppercase tracking-wider mb-3">
           Sales Breakdown
@@ -149,7 +119,6 @@ export default function IncentivePanel({
               .filter((sale) => sale.units_sold > 0)
               .map((sale) => {
                 const modelDetails = carModels.find((c) => c.id === sale.car_model_id);
-                // Calculate rate using active slab's rate
                 const carPayout = sale.units_sold * result.active_slab.incentive_per_unit;
 
                 return (
@@ -170,7 +139,6 @@ export default function IncentivePanel({
                 );
               })}
 
-            {/* Total Row */}
             <div className="flex justify-between items-center text-[14px] text-[#0A0A0A] font-extrabold pt-3 mt-1.5">
               <span>Total ({result.total_units} units)</span>
               <span className="text-[#EB0A1E] text-[15px]">
@@ -185,12 +153,8 @@ export default function IncentivePanel({
         <>
           <hr className="border-[#E5E5E5] w-full" />
 
-          {/* ──────────────────────────────────────────────────────────── */}
-          {/* SECTION 4: NEXT TIER MOTIVATIONAL NUDGE */}
-          {/* ──────────────────────────────────────────────────────────── */}
           {!isTopTier && result.payout > 0 && (
             <div className="pt-1">
-              {/* Amber banner card */}
               <div className="bg-[#FFFBEB] border-l-4 border-l-[#F59E0B] border-y border-r border-[#E5E5E5] rounded-[4px] p-4 text-[12.5px] text-[#7F5F00] font-medium leading-relaxed mb-3.5 flex gap-2.5 items-start">
                 <AlertCircle className="w-[17px] h-[17px] text-[#B08000] flex-shrink-0 mt-0.5" strokeWidth={1} />
                 <p>
@@ -204,7 +168,6 @@ export default function IncentivePanel({
                 </p>
               </div>
 
-              {/* Thin red progress bar */}
               <div className="space-y-1.5">
                 <div className="flex justify-between items-center text-[10.5px] font-bold text-[#767676] uppercase tracking-wide">
                   <span>Tier Progress</span>
@@ -220,7 +183,6 @@ export default function IncentivePanel({
             </div>
           )}
 
-          {/* Already at the top tier banner */}
           {isTopTier && result.payout > 0 && (
             <div className="bg-[#E6F4EA] border border-[#A3D7B5] rounded-[4px] p-4 text-[12.5px] text-[#137333] font-medium leading-relaxed flex gap-2.5 items-start">
               <Award className="w-[17px] h-[17px] text-[#137333] flex-shrink-0 mt-0.5" strokeWidth={1} />
@@ -234,9 +196,6 @@ export default function IncentivePanel({
 
       <hr className="border-[#E5E5E5] w-full" />
 
-      {/* ──────────────────────────────────────────────────────────── */}
-      {/* SECTION 5: ACTION SUBMISSION BUTTON */}
-      {/* ──────────────────────────────────────────────────────────── */}
       <div className="mt-1">
         <button
           onClick={handleSave}

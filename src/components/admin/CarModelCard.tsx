@@ -14,20 +14,6 @@ interface CarModelCardProps {
   onToggleActive: (car: CarModel) => void;
 }
 
-/**
- * Toyota Incentive Portal — Car Model Grid Card Component.
- *
- * Implements standard brand vehicle layouts:
- * - White container card with subtle borders and flat shadow lifts on mouse hovering.
- * - Top 60% space (180px): object-cover car photography, falling back to a clean
- *   gray linear gradient with a centered vector Car emblem.
- * - Bottom 40% space (120px): details padding with Inter headings, variant labels,
- *   green/gray pill badges, and a clean action deck that fades in on hover.
- *
- * @param car - The database car model configuration parameters
- * @param onEdit - Event triggering form modal edit views
- * @param onToggleActive - Event triggering optimistic active status mutations
- */
 export default function CarModelCard({
   car,
   onEdit,
@@ -85,7 +71,6 @@ export default function CarModelCard({
     <>
       <article className="group relative w-full h-[300px] bg-white border border-[#E5E5E5] rounded-[4px] overflow-hidden shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 select-none">
         
-        {/* Top 60%: Graphic / Photography Panel (180px) */}
         <div className="relative w-full h-[180px] bg-[#F4F4F4] overflow-hidden">
           {car.image_url && !imageError ? (
             <img
@@ -96,17 +81,14 @@ export default function CarModelCard({
               onError={() => setImageError(true)}
             />
           ) : (
-            /* Center fallback gradient if image missing or broken */
             <div className="absolute inset-0 bg-gradient-to-br from-[#E5E5E5] to-[#F4F4F4] flex items-center justify-center">
               <Car className="w-10 h-10 text-[#767676] stroke-[1.25] transition-transform duration-300 group-hover:scale-110" />
             </div>
           )}
         </div>
 
-        {/* Bottom 40%: Description & Actions Panel (120px) */}
         <div className="p-4 h-[120px] flex flex-col justify-between bg-white border-t border-[#F4F4F4]">
           
-          {/* Texts and Status Indicators */}
           <div>
             <div className="flex items-start justify-between gap-2">
               <h3
@@ -116,7 +98,6 @@ export default function CarModelCard({
                 {car.name}
               </h3>
               
-              {/* Active Status Badge Pill */}
               <span
                 className={cn(
                   "inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider leading-none",
@@ -137,10 +118,8 @@ export default function CarModelCard({
             </p>
           </div>
 
-          {/* Action Row Deck (fades in smoothly on element hover) */}
           <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
             
-            {/* Edit form toggle button */}
             <button
               onClick={() => onEdit(car)}
               aria-label={`Edit ${car.name}`}
@@ -150,7 +129,6 @@ export default function CarModelCard({
               <Pencil className="w-[15px] h-[15px]" />
             </button>
 
-            {/* Active status deactivation/activation button */}
             <button
               onClick={() => onToggleActive(car)}
               aria-label={car.is_active ? `Deactivate ${car.name}` : `Activate ${car.name}`}
@@ -165,7 +143,6 @@ export default function CarModelCard({
               <Power className="w-[15px] h-[15px]" />
             </button>
 
-            {/* Delete car model button */}
             <button
               onClick={() => setIsDialogOpen(true)}
               aria-label={`Delete ${car.name}`}

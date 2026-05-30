@@ -1,8 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
 
-/**
- * Pulse Loader Skeleton for Activity Feed Section.
- */
 export function ActivityFeedSkeleton() {
   return (
     <div className="bg-white border border-[#E5E5E5] rounded-[4px] p-6 shadow-sm animate-pulse">
@@ -22,9 +19,6 @@ export function ActivityFeedSkeleton() {
   );
 }
 
-/**
- * Computes human-readable relative time strings since a timestamp.
- */
 function getRelativeTime(timestamp: string): string {
   const now = new Date();
   const date = new Date(timestamp);
@@ -43,17 +37,9 @@ function getRelativeTime(timestamp: string): string {
   return `${diffDays}d ago`;
 }
 
-/**
- * ActivityFeedSection Component.
- *
- * Renders the last 10 logs recorded by officers in the database.
- * - Displays actions in a beautiful custom timeline format with Toyota red indicator nodes.
- * - Displays relative date stamps (e.g. "2h ago") for scanability.
- */
 export default async function ActivityFeedSection() {
   const supabase = await createClient();
 
-  // Fetch last 6 entries across all months
   const salesPromise = supabase
     .from("sales_entries")
     .select(`
@@ -71,7 +57,6 @@ export default async function ActivityFeedSection() {
     .order("updated_at", { ascending: false })
     .limit(6);
 
-  // Fetch officer names
   const rolesPromise = supabase
     .from("user_roles")
     .select("user_id, full_name")
@@ -120,7 +105,6 @@ export default async function ActivityFeedSection() {
                 return (
                   <li key={entry.id}>
                     <div className="relative pb-6">
-                      {/* Vertical connector line */}
                       {idx !== sales.length - 1 ? (
                         <span
                           className="absolute top-4 left-[5px] -ml-px h-full w-[1px] bg-[#E5E5E5]"
@@ -129,12 +113,10 @@ export default async function ActivityFeedSection() {
                       ) : null}
 
                       <div className="relative flex space-x-3 items-start">
-                        {/* Timeline dot node */}
                         <div className="mt-2">
                           <span className="h-2.5 w-2.5 rounded-full bg-[#EB0A1E] flex items-center justify-center ring-4 ring-white" />
                         </div>
 
-                        {/* Main log content */}
                         <div className="flex-1 min-w-0 flex justify-between items-start gap-4">
                           <p className="text-[13px] text-[#606060] font-sans leading-snug">
                             <span className="font-bold text-[#0A0A0A] mr-1">

@@ -11,16 +11,6 @@ interface OfficerTopNavProps {
   userFullName?: string;
 }
 
-/**
- * Toyota Incentive Portal — Officer Top Navigation Component.
- *
- * Implements fixed top-bar navigation (60px high) for sales officers:
- * - Clean white background with a bottom border separating the workspace.
- * - Left: Red Toyota emblem SVG logo + brand portal text.
- * - Center: Centered "INCENTIVE PORTAL" title.
- * - Right: Dynamic display name + initials circle from live session data + ghost LogOut button.
- * - Responsive Collapsible: Toggles menu content below the navigation bar for touch viewports.
- */
 export default function OfficerTopNav({ userFullName }: OfficerTopNavProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [currentMonth, setCurrentMonth] = useState("");
@@ -64,7 +54,6 @@ export default function OfficerTopNav({ userFullName }: OfficerTopNavProps) {
     ? displayName.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2)
     : "...";
 
-  // Populate formatted calendar date on mount to eliminate SSR hydration mismatches
   useEffect(() => {
     const now = new Date();
     const formatter = new Intl.DateTimeFormat("en-US", {
@@ -86,10 +75,8 @@ export default function OfficerTopNav({ userFullName }: OfficerTopNavProps) {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-40 bg-white border-b border-[#E5E5E5] h-[60px] select-none">
-      {/* Upper main navbar flex line */}
       <div className="max-w-7xl mx-auto h-full px-4 md:px-6 flex items-center justify-between">
         
-        {/* Left Side: Toyota Red Emblem & Nippon Toyota Text */}
         <Link href="/officer/dashboard" className="flex items-center gap-2.5">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -102,11 +89,8 @@ export default function OfficerTopNav({ userFullName }: OfficerTopNavProps) {
             className="w-[28px] h-auto flex-shrink-0"
             aria-hidden="true"
           >
-            {/* Outer large oval */}
             <path d="M12 12m-10 0a10 7 0 1 0 20 0a10 7 0 1 0 -20 0" />
-            {/* Inner vertical oval */}
             <path d="M9 12c0 3.866 1.343 7 3 7s3 -3.134 3 -7s-1.343 -7 -3 -7s-3 3.134 -3 7z" />
-            {/* Inner horizontal oval */}
             <path d="M6.415 6.191c-.888 .503 -1.415 1.13 -1.415 1.809c0 1.657 3.134 3 7 3s7 -1.343 7 -3c0 -.678 -.525 -1.304 -1.41 -1.806" />
           </svg>
           <span className="font-sans font-bold text-[14px] text-[#EB0A1E] tracking-wider uppercase">
@@ -114,14 +98,11 @@ export default function OfficerTopNav({ userFullName }: OfficerTopNavProps) {
           </span>
         </Link>
 
-        {/* Center Side: "INCENTIVE PORTAL" */}
         <div className="hidden md:flex items-center justify-center font-sans font-semibold text-[15px] text-[#0A0A0A] tracking-wider">
           INCENTIVE PORTAL
         </div>
 
-        {/* Right Side: Account Block & Desktop Sign Out */}
         <div className="flex items-center gap-4">
-          {/* Avatar and Identity */}
           <div className="flex items-center gap-3">
             <span className="hidden md:inline font-sans font-semibold text-[13px] text-[#0A0A0A]">
               {displayName}
@@ -134,7 +115,6 @@ export default function OfficerTopNav({ userFullName }: OfficerTopNavProps) {
             </div>
           </div>
 
-          {/* Desktop Sign Out Icon Button */}
           <button
             onClick={handleSignOut}
             aria-label="Sign Out"
@@ -143,7 +123,6 @@ export default function OfficerTopNav({ userFullName }: OfficerTopNavProps) {
             <LogOut className="w-5 h-5" />
           </button>
 
-          {/* Mobile Hamburger Navigation Button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
             aria-label="Toggle Navigation Menu"
@@ -155,7 +134,6 @@ export default function OfficerTopNav({ userFullName }: OfficerTopNavProps) {
         </div>
       </div>
 
-      {/* Expanded dropdown overlay matching mobile layout */}
       <div
         className={cn(
           "absolute top-[60px] left-0 right-0 z-30 bg-white border-b border-[#E5E5E5] px-4 py-4 md:hidden shadow-lg transition-all duration-200 ease-in-out origin-top scale-y-0 opacity-0",
@@ -163,12 +141,10 @@ export default function OfficerTopNav({ userFullName }: OfficerTopNavProps) {
         )}
       >
         <div className="flex flex-col gap-3">
-          {/* Date Indicator (Mobile) */}
           <div className="px-3 py-2 bg-[#F4F4F4] border border-[#E5E5E5] rounded-[4px] text-center font-sans font-semibold text-[13px] text-[#0A0A0A]">
             Current Period: {currentMonth || "Loading..."}
           </div>
 
-          {/* Navigation Links */}
           <Link
             href="/officer/dashboard"
             onClick={() => setIsOpen(false)}
@@ -185,7 +161,6 @@ export default function OfficerTopNav({ userFullName }: OfficerTopNavProps) {
 
           <hr className="border-[#E5E5E5] my-1" />
 
-          {/* Mobile Sign Out Button */}
           <button
             onClick={handleSignOut}
             className="flex items-center justify-center gap-2 w-full py-2.5 px-3 font-sans font-semibold text-[13px] text-[#EB0A1E] hover:text-[#C5081A] bg-[#EB0A1E]/5 hover:bg-[#EB0A1E]/10 rounded-[4px] transition-colors border border-transparent"

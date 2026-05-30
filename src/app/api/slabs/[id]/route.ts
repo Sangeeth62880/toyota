@@ -28,10 +28,6 @@ import type { IncentiveSlab } from "@/lib/types";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
-/**
- * Checks if a proposed slab range overlaps with any existing slab,
- * excluding the slab being updated (identified by excludeId).
- */
 function findOverlapExcluding(
   proposed: { min_units: number; max_units: number | null },
   existing: IncentiveSlab[],
@@ -50,13 +46,6 @@ function findOverlapExcluding(
   return null;
 }
 
-/**
- * PUT /api/slabs/[id]
- *
- * Updates an existing incentive slab. Admin only.
- * Re-validates overlap after applying the update to prevent
- * conflicting slab ranges.
- */
 export async function PUT(request: NextRequest, context: RouteContext) {
   try {
     const { supabase, user } = await getAuthenticatedUser();
@@ -159,13 +148,6 @@ export async function PUT(request: NextRequest, context: RouteContext) {
   }
 }
 
-/**
- * DELETE /api/slabs/[id]
- *
- * Deletes an incentive slab. Admin only.
- * Prevents deletion if it's the last remaining slab — the system
- * must always have at least one slab for incentive calculations.
- */
 export async function DELETE(_request: NextRequest, context: RouteContext) {
   try {
     const { supabase, user } = await getAuthenticatedUser();

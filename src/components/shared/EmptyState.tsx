@@ -8,25 +8,12 @@ interface EmptyStateAction {
 }
 
 interface EmptyStateProps {
-  /** Lucide Icon component to render at the top */
   icon: ComponentType<{ className?: string }>;
-  /** Bold main title header text */
   title: string;
-  /** Explanatory description text providing guidance */
   description: string;
-  /** Optional call-to-action button configuration */
   action?: EmptyStateAction;
 }
 
-/**
- * Toyota Incentive Portal — Shared Empty State Component.
- *
- * Renders consistent placeholder states:
- * - Centered layout with vertical padding.
- * - Center light-gray circular background wrapping the Lucide vector icon.
- * - Semibold heading (Inter 600) and gray description labels.
- * - Optional brand-red primary button action trigger.
- */
 export default function EmptyState({
   icon: Icon,
   title,
@@ -35,12 +22,11 @@ export default function EmptyState({
 }: EmptyStateProps) {
   return (
     <div className="flex flex-col items-center justify-center text-center py-12 px-4 select-none font-sans bg-white border border-[#E5E5E5] rounded-[4px] shadow-sm">
-      {/* Icon circular container block */}
+
       <div className="w-16 h-16 rounded-full bg-[#F4F4F4] flex items-center justify-center mb-4 text-[#767676] border border-[#E5E5E5]">
         <Icon className="w-7 h-7 stroke-[1.25] flex-shrink-0" />
       </div>
 
-      {/* Main heading description block */}
       <h3 className="font-sans font-bold text-[16px] text-[#0A0A0A] tracking-tight leading-tight">
         {title}
       </h3>
@@ -48,7 +34,6 @@ export default function EmptyState({
         {description}
       </p>
 
-      {/* Optional action CTA trigger */}
       {action && (
         <button
           type="button"

@@ -8,18 +8,6 @@ interface SlabLadderProps {
   activeSlabId: string;
 }
 
-/**
- * Toyota Incentive Portal — Stepped Slab Payout Ladder.
- *
- * Implements smooth visual indicator columns:
- * - Active tier scales slightly and displays in solid Toyota Red background.
- * - Inactive tiers display cleanly in subtle grays with gray border outlines.
- * - Connects volume range metrics with specific per-vehicle payouts.
- * - Uses 300ms transitions on color transformations.
- *
- * @param slabs - The list of sorted slabs configuration
- * @param activeSlabId - UUID of the currently qualifying slab
- */
 export default function SlabLadder({ slabs, activeSlabId }: SlabLadderProps) {
   return (
     <div className="flex flex-col gap-2.5 select-none font-sans">

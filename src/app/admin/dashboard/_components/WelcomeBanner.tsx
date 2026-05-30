@@ -7,14 +7,6 @@ interface WelcomeBannerProps {
   totalSales: number;
 }
 
-/**
- * Toyota Incentive Portal — Overview Dashboard Header.
- *
- * Implements a data-forward, clean automotive industrial layout:
- * - Left: Page title "Overview" (Inter 800) + dynamic current date in gray.
- * - Right: Single prominent stat showing total cars sold this month in a large red number block.
- * - Completely transparent/white background structure clearing unnecessary spacer templates.
- */
 export default function WelcomeBanner({ totalSales }: WelcomeBannerProps) {
   const [formattedDate, setFormattedDate] = useState("");
 
@@ -31,7 +23,7 @@ export default function WelcomeBanner({ totalSales }: WelcomeBannerProps) {
 
   return (
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 select-none font-sans">
-      {/* Title & Calendar Date Column */}
+
       <div>
         <h1 className="text-[32px] font-extrabold text-[#0A0A0A] tracking-tight leading-none">
           Overview
@@ -41,7 +33,6 @@ export default function WelcomeBanner({ totalSales }: WelcomeBannerProps) {
         </p>
       </div>
 
-      {/* Prominent High-Visibility Sales Counter Box */}
       <div className="flex items-center gap-6 bg-white border border-[#E5E5E5] rounded-[4px] px-6 py-4 shadow-sm min-w-[240px] justify-between transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 border-b-2 border-b-[#EB0A1E]">
         <div className="min-w-0">
           <span className="block text-[32px] font-extrabold text-[#EB0A1E] leading-none tracking-tight">

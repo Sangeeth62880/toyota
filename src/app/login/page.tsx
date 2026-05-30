@@ -6,9 +6,6 @@ import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { ROLES, ROUTES } from "@/lib/constants";
 
-/**
- * Loading placeholder while Suspense finishes loading the login form search parameters.
- */
 function LoginFormFallback() {
   return (
     <div className="flex flex-col items-center justify-center py-12">
@@ -18,15 +15,11 @@ function LoginFormFallback() {
   );
 }
 
-/**
- * The inner login form component that consumes search parameters.
- */
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirectTo");
 
-  // Form states
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -35,17 +28,12 @@ function LoginForm() {
 
   const supabase = createClient();
 
-  /**
-   * Handles email and password submission, validates format,
-   * performs sign in, retrieves user roles, and redirects.
-   */
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isLoading) return;
 
     setError(null);
 
-    // 1. Basic validation
     const trimmedEmail = email.trim();
     if (!trimmedEmail) {
       setError("Please enter your email address.");
@@ -71,7 +59,6 @@ function LoginForm() {
     setIsLoading(true);
 
     try {
-      // 2. Sign in using Supabase client component API
       const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
         email: trimmedEmail,
         password,
@@ -83,7 +70,6 @@ function LoginForm() {
         return;
       }
 
-      // 3. Fetch user role from user_roles
       const { data: roleData, error: roleError } = await supabase
         .from("user_roles")
         .select("role")
@@ -91,7 +77,7 @@ function LoginForm() {
         .single();
 
       if (roleError || !roleData) {
-        // Sign out if no role is mapped, ensuring security
+        // No role mapped — sign out to prevent unauthorized access
         await supabase.auth.signOut();
         setError("No authorized role assigned to this account.");
         setIsLoading(false);
@@ -100,13 +86,11 @@ function LoginForm() {
 
       const role = roleData.role;
 
-      // 4. Redirect to dashboard depending on the role
       const dashboardUrl =
         role === ROLES.ADMIN
           ? ROUTES.ADMIN_DASHBOARD
           : ROUTES.OFFICER_DASHBOARD;
 
-      // Navigate to destination
       router.push(redirectTo || dashboardUrl);
     } catch (err) {
       console.error("Authentication error:", err);
@@ -117,7 +101,7 @@ function LoginForm() {
 
   return (
     <form onSubmit={handleSubmit} className="w-full flex flex-col" noValidate>
-      {/* Email Input */}
+
       <div className="relative mb-4">
         <label htmlFor="email" className="sr-only">
           Email address
@@ -135,7 +119,6 @@ function LoginForm() {
         />
       </div>
 
-      {/* Password Input */}
       <div className="relative mb-6">
         <label htmlFor="password" className="sr-only">
           Password
@@ -166,7 +149,6 @@ function LoginForm() {
         </button>
       </div>
 
-      {/* Error Message Area */}
       {error && (
         <div
           role="alert"
@@ -176,7 +158,6 @@ function LoginForm() {
         </div>
       )}
 
-      {/* Sign In Button */}
       <button
         type="submit"
         disabled={isLoading}
@@ -195,21 +176,10 @@ function LoginForm() {
   );
 }
 
-/**
- * Toyota Incentive Portal — Production Login Page.
- *
- * Implements strict Toyota brand specifications:
- * - Unsplash backdrop with Fortuner in dark setting
- * - Transparent dark overlay (rgba(0,0,0,0.65))
- * - Sharp-cornered centralized white card
- * - SVG Toyota three-oval emblem geometry
- * - Client-side state handling & validation
- * - Secure role-based redirection to administrative or officer dashboards
- */
 export default function LoginPage() {
   return (
     <main className="relative min-h-screen w-full flex items-center justify-center bg-[#0A0A0A] overflow-hidden select-none">
-      {/* Background Image Layer */}
+
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform scale-105"
         style={{
@@ -219,12 +189,10 @@ export default function LoginPage() {
         }}
       />
 
-      {/* Dark Overlay Layer */}
       <div className="absolute inset-0 bg-black/65" />
 
-      {/* Centered Credential Card */}
       <section className="relative z-10 w-full max-w-[420px] bg-white rounded-[4px] p-[48px] shadow-[0_12px_40px_rgba(0,0,0,0.3)] mx-4">
-        {/* Logo Container */}
+
         <div className="flex justify-center mb-6">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -246,7 +214,6 @@ export default function LoginPage() {
           </svg>
         </div>
 
-        {/* Brand Text Headers */}
         <h1 className="text-center font-sans font-bold text-[22px] text-[#0A0A0A] leading-tight mb-[4px]">
           Incentive Portal
         </h1>
@@ -254,12 +221,10 @@ export default function LoginPage() {
           Nippon Toyota
         </p>
 
-        {/* Suspense Protected Login Form */}
         <Suspense fallback={<LoginFormFallback />}>
           <LoginForm />
         </Suspense>
 
-        {/* Authorized Use Disclaimer Footer */}
         <footer className="mt-[24px] text-center">
           <p className="font-sans font-normal text-[12px] text-[#767676] tracking-wide">
             Authorized personnel only

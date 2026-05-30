@@ -11,50 +11,27 @@ interface CarModelGridProps {
   initialCars: CarModel[];
 }
 
-/**
- * Toyota Incentive Portal — Car Models Grid & State Manager.
- *
- * Implements the interactive admin control panel:
- * - Coordinates state list for all car models.
- * - Performs optimistic UI updates (inserts, updates, active/inactive toggles)
- *   with full rollback capabilities on fetch network errors.
- * - Triggers Next.js router.refresh() to synchronize server caches after mutations.
- * - Manages modal open/close dialog flow.
- *
- * @param initialCars - Initial list of car models fetched from Server Component
- */
 export default function CarModelGrid({ initialCars }: CarModelGridProps) {
   const router = useRouter();
   const [cars, setCars] = useState<CarModel[]>(initialCars);
 
-  // Sync state if server component re-fetches or refreshes data
   useEffect(() => {
     setCars(initialCars);
   }, [initialCars]);
 
-  // Modal triggers
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCar, setSelectedCar] = useState<CarModel | null>(null);
 
-  /**
-   * Triggers Form Modal for CREATE actions.
-   */
   const handleOpenAddModal = () => {
     setSelectedCar(null);
     setIsModalOpen(true);
   };
 
-  /**
-   * Triggers Form Modal for EDIT actions.
-   */
   const handleOpenEditModal = (car: CarModel) => {
     setSelectedCar(car);
     setIsModalOpen(true);
   };
 
-  /**
-   * Mutation: Creates or Updates car model with optimistic UI representation.
-   */
   const handleSaveCarModel = async (formData: {
     name: string;
     variant?: string;
@@ -65,7 +42,6 @@ export default function CarModelGrid({ initialCars }: CarModelGridProps) {
     const isEdit = !!selectedCar;
     const modelId = selectedCar?.id;
 
-    // 1. Optimistic Update
     if (isEdit && modelId) {
       setCars((prev) =>
         prev.map((c) =>
@@ -98,7 +74,6 @@ export default function CarModelGrid({ initialCars }: CarModelGridProps) {
       );
     }
 
-    // 2. Perform REST network request
     try {
       const url = isEdit ? `/api/cars/${modelId}` : "/api/cars";
       const method = isEdit ? "PUT" : "POST";
@@ -113,7 +88,6 @@ export default function CarModelGrid({ initialCars }: CarModelGridProps) {
         throw new Error(`Failed to save car model: ${res.statusText}`);
       }
 
-      // 3. Clear cache and revalidate on server
       router.refresh();
     } catch (err) {
       console.error(err);
@@ -123,19 +97,14 @@ export default function CarModelGrid({ initialCars }: CarModelGridProps) {
     }
   };
 
-  /**
-   * Mutation: Toggles active / inactive status of car model with optimistic rollback.
-   */
   const handleToggleActive = async (car: CarModel) => {
     const previousCars = [...cars];
     const nextActiveState = !car.is_active;
 
-    // 1. Optimistic Update
     setCars((prev) =>
       prev.map((c) => (c.id === car.id ? { ...c, is_active: nextActiveState } : c))
     );
 
-    // 2. Perform REST network request (PUT deactivation / activation)
     try {
       const res = await fetch(`/api/cars/${car.id}`, {
         method: "PUT",
@@ -147,7 +116,6 @@ export default function CarModelGrid({ initialCars }: CarModelGridProps) {
         throw new Error(`Failed to toggle active status: ${res.statusText}`);
       }
 
-      // 3. Revalidate server cache
       router.refresh();
     } catch (err) {
       console.error(err);
@@ -159,7 +127,6 @@ export default function CarModelGrid({ initialCars }: CarModelGridProps) {
 
   return (
     <div className="space-y-8 select-none font-sans">
-      {/* Upper header action row */}
       <div className="flex items-center justify-between gap-4">
         <div>
           <h1 className="font-sans font-bold text-[26px] text-[#0A0A0A] tracking-tight leading-tight">
@@ -179,7 +146,6 @@ export default function CarModelGrid({ initialCars }: CarModelGridProps) {
         </button>
       </div>
 
-      {/* Grid container of car models */}
       {cars.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-center bg-white border border-[#E5E5E5] rounded-[4px] shadow-sm">
           <Car className="w-16 h-16 text-[#9CA3AF] mb-4 stroke-[1.25]" />
@@ -201,7 +167,6 @@ export default function CarModelGrid({ initialCars }: CarModelGridProps) {
         </div>
       )}
 
-      {/* Reusable Form Modal */}
       <CarModelFormModal
         isOpen={isModalOpen}
         onOpenChange={setIsModalOpen}

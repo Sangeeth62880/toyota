@@ -12,21 +12,6 @@ interface CarVolumeCardProps {
   onChange: (units: number) => void;
 }
 
-/**
- * Toyota Incentive Portal — Car Volume Entry Card.
- *
- * Implements premium sales recording interfaces:
- * - Red accent left border (3px) appearing smoothly when units > 0.
- * - Responsive 16:9 vehicle graphic block with object-cover and gradient fallback.
- * - Responsive circle stepper buttons (32px) deactivating past months securely.
- * - Value highlighting (Toyota Red if > 0, standard gray if 0).
- * - Transitions set at 200ms ease.
- *
- * @param car - The vehicle model parameters
- * @param units - Current quantity logged
- * @param readOnly - Disables stepper controls for locked historical months
- * @param onChange - Emits state updates to master controller
- */
 export default function CarVolumeCard({
   car,
   units,
@@ -54,7 +39,7 @@ export default function CarVolumeCard({
         isLogged && "border-l-[3.5px] border-l-[#EB0A1E]"
       )}
     >
-      {/* 16:9 Aspect Ratio Photography (top) */}
+
       <div className="relative w-full aspect-video bg-[#F4F4F4] overflow-hidden">
         {car.image_url && !imageError ? (
           <img
@@ -65,16 +50,15 @@ export default function CarVolumeCard({
             onError={() => setImageError(true)}
           />
         ) : (
-          /* Gray gradient SVG fallback */
+          /* SVG fallback */
           <div className="absolute inset-0 bg-gradient-to-br from-[#1A1A1A] to-[#333333] flex items-center justify-center">
             <Car className="w-10 h-10 text-white/40 stroke-[1.25] transition-transform duration-300 group-hover:scale-115" />
           </div>
         )}
       </div>
 
-      {/* Texts and Stepper Area (bottom) */}
       <div className="p-4 flex-1 flex flex-col justify-between gap-4">
-        {/* Name and Variant labels */}
+
         <div>
           <h3 className="font-sans font-bold text-[15px] text-[#0A0A0A] leading-tight truncate">
             {car.name}
@@ -84,11 +68,9 @@ export default function CarVolumeCard({
           </p>
         </div>
 
-        {/* Stepper Grid Panel */}
         <div className="flex flex-col items-center gap-3">
           <div className="flex items-center justify-center gap-6">
-            
-            {/* Minus Stepper Button */}
+
             <button
               type="button"
               onClick={handleDecrement}
@@ -102,7 +84,6 @@ export default function CarVolumeCard({
               <Minus className="w-[15px] h-[15px]" />
             </button>
 
-            {/* Current logged number display */}
             <span
               className={cn(
                 "font-sans font-extrabold text-[24px] w-[36px] text-center transition-colors duration-200",
@@ -112,7 +93,6 @@ export default function CarVolumeCard({
               {units}
             </span>
 
-            {/* Plus Stepper Button */}
             <button
               type="button"
               onClick={handleIncrement}
@@ -126,8 +106,7 @@ export default function CarVolumeCard({
               <Plus className="w-[15px] h-[15px]" />
             </button>
           </div>
-          
-          {/* Read-only historical lock indicator */}
+
           {readOnly && (
             <span className="text-[10px] font-sans font-bold text-[#767676] uppercase tracking-wider leading-none">
               History Locked

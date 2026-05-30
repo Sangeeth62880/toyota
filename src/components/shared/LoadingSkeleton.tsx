@@ -1,16 +1,11 @@
 "use client";
 
-/**
- * Pulse skeleton layout matching CarModelCard dimensions and structure:
- * - 180px top image placeholder block.
- * - 120px bottom texts and action rows placeholder panel.
- */
 export function CardSkeleton() {
   return (
     <div className="w-full h-[300px] bg-white border border-[#E5E5E5] rounded-[4px] overflow-hidden shadow-sm animate-pulse flex flex-col justify-between">
-      {/* Graphic 180px top block */}
+
       <div className="w-full h-[180px] bg-gray-200" />
-      {/* Content 120px bottom block */}
+
       <div className="p-4 h-[120px] flex flex-col justify-between border-t border-[#F4F4F4]">
         <div className="space-y-2">
           <div className="h-4 bg-gray-200 rounded-[4px] w-2/3" />
@@ -25,10 +20,6 @@ export function CardSkeleton() {
   );
 }
 
-/**
- * Pulse skeleton layout matching standard tabular SlabRow sizes:
- * - Columns: Tier | Range | Rate | Impact | Actions
- */
 export function TableRowSkeleton() {
   return (
     <tr className="border-b border-[#E5E5E5] animate-pulse h-[56px]">
@@ -54,13 +45,6 @@ export function TableRowSkeleton() {
   );
 }
 
-/**
- * Pulse skeleton layout matching standard AdminStats summary card dimensions:
- * - 148px height minimum block.
- * - Circular/Square top visual metric box.
- * - Thick numbers block in the middle.
- * - Text tag label on bottom.
- */
 export function StatCardSkeleton() {
   return (
     <div className="bg-white border border-[#E5E5E5] rounded-[4px] p-6 flex flex-col justify-between min-h-[148px] shadow-sm animate-pulse">

@@ -23,13 +23,6 @@ import {
   respond,
 } from "@/lib/api-helpers";
 
-/**
- * GET /api/cars
- *
- * Returns all active car models, ordered by name.
- * Accessible to any authenticated user (officers need this to populate
- * the sales entry form).
- */
 export async function GET() {
   try {
     const { supabase, user } = await getAuthenticatedUser();
@@ -49,12 +42,6 @@ export async function GET() {
   }
 }
 
-/**
- * POST /api/cars
- *
- * Creates a new car model. Admin only.
- * Validates that `name` is a non-empty string.
- */
 export async function POST(request: NextRequest) {
   try {
     const { supabase, user } = await getAuthenticatedUser();

@@ -15,16 +15,6 @@ interface SlabRowProps {
   onCancelNew?: () => void;
 }
 
-/**
- * SlabRow Component.
- *
- * Renders a single row inside SlabTable, supporting:
- * - Direct inline editing.
- * - Inputs for min/max units with an open-ended "No limit" checkbox.
- * - Dynamic live estimation of Annual Impact.
- * - Inline delete confirm bubble (cleaner than dialogs).
- * - Comprehensive client-side overlap checks and database validation error rendering.
- */
 export default function SlabRow({
   slab,
   tierIndex,
@@ -36,18 +26,15 @@ export default function SlabRow({
 }: SlabRowProps) {
   const [isEditing, setIsEditing] = useState(isInitiallyEditing);
 
-  // Form Fields
   const [minUnits, setMinUnits] = useState(slab.min_units);
   const [maxUnits, setMaxUnits] = useState<number | null>(slab.max_units);
   const [isNoLimit, setIsNoLimit] = useState(slab.max_units === null);
   const [incentiveRate, setIncentiveRate] = useState(slab.incentive_per_unit);
 
-  // States
   const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 
-  // Re-sync fields when slab data updates
   useEffect(() => {
     setMinUnits(slab.min_units);
     setMaxUnits(slab.max_units);
@@ -66,9 +53,6 @@ export default function SlabRow({
     }
   };
 
-  /**
-   * Annual Impact estimation based on the active row parameters.
-   */
   const calculateAnnualImpact = (min: number, max: number | null, rate: number): string => {
     const avgUnits = max === null ? min + 2 : (min + max) / 2;
     const annualEst = rate * avgUnits * 12;
@@ -79,9 +63,6 @@ export default function SlabRow({
     }).format(annualEst);
   };
 
-  /**
-   * Performs quick client-side validation before sending database mutations.
-   */
   const validateSlab = (): boolean => {
     if (minUnits < 1) {
       setError("Minimum units must be at least 1.");
@@ -178,12 +159,10 @@ export default function SlabRow({
           isEditing && "bg-[#FDFDFD]"
         )}
       >
-        {/* Column 1: Tier Label */}
         <td className="py-3 px-6 font-bold text-[#0A0A0A]">
           Tier {tierIndex}
         </td>
 
-        {/* Column 2: Units Range */}
         <td className="py-3 px-6">
           {isEditing ? (
             <div className="flex items-center gap-2">
@@ -226,7 +205,6 @@ export default function SlabRow({
           )}
         </td>
 
-        {/* Column 3: Payout Rate per unit */}
         <td className="py-3 px-6">
           {isEditing ? (
             <div className="relative w-[130px]">
@@ -248,7 +226,6 @@ export default function SlabRow({
           )}
         </td>
 
-        {/* Column 4: Annual Impact Estimation */}
         <td className="py-3 px-6 font-medium text-[#606060]">
           {isEditing ? (
             <span className="text-[13px] italic text-[#606060]">
@@ -262,7 +239,6 @@ export default function SlabRow({
           )}
         </td>
 
-        {/* Column 5: Action Deck */}
         <td className="py-3 px-6 text-right">
           {isEditing ? (
             <div className="flex items-center justify-end gap-2">
@@ -322,7 +298,6 @@ export default function SlabRow({
         </td>
       </tr>
 
-      {/* Inline Validation Alert Row */}
       {error && (
         <tr className="bg-[#FFF8F8] border-b border-[#E5E5E5] select-none">
           <td colSpan={5} className="py-2.5 px-6">

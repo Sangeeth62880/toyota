@@ -1,21 +1,11 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
-/**
- * Toyota Incentive Portal — Next.js 404 Page Not Found.
- *
- * Implements clean, minimal Toyota brand fallbacks:
- * - Centered vertical structure.
- * - Bold "404" red brand text tags.
- * - Subtitle explaining that the page does not exist.
- * - A primary back button routing back to "/" (which automatically forwards to the appropriate dashboard via middleware).
- */
 export default function NotFound() {
   return (
     <main className="min-h-screen w-full flex items-center justify-center bg-[#F4F4F4] px-4 font-sans select-none">
       <div className="w-full max-w-[420px] bg-white border border-[#E5E5E5] rounded-[4px] p-8 shadow-lg text-center flex flex-col items-center">
-        
-        {/* Emblem or branding header */}
+
         <div className="flex justify-center mb-6">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -37,7 +27,6 @@ export default function NotFound() {
           </svg>
         </div>
 
-        {/* 404 Large Index */}
         <h1 className="font-sans font-extrabold text-[56px] text-[#EB0A1E] tracking-tighter leading-none mb-2">
           404
         </h1>
@@ -50,7 +39,6 @@ export default function NotFound() {
           The requested page does not exist or has been relocated within this portal.
         </p>
 
-        {/* CTA Link returning to router roots */}
         <Link
           href="/"
           className="h-[40px] px-6 bg-[#0A0A0A] hover:bg-[#1a1a1a] text-white text-[13px] font-semibold rounded-none transition-colors duration-200 flex items-center justify-center gap-2 focus:ring-2 focus:ring-[#0A0A0A] focus:ring-offset-2 outline-none w-full"

@@ -6,7 +6,6 @@ const envPath = '/Users/sangeethps/toyota/.env';
 console.log("Reading env file from:", envPath);
 const envContent = fs.readFileSync(envPath, 'utf8');
 
-// Extract connection string
 const urlMatch = envContent.match(/NEXT_PUBLIC_SUPABASE_URL\s*=\s*(.+)/);
 if (!urlMatch) {
   console.error("Error: Could not find NEXT_PUBLIC_SUPABASE_URL in .env file.");

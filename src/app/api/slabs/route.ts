@@ -30,13 +30,6 @@ import {
 } from "@/lib/api-helpers";
 import type { IncentiveSlab } from "@/lib/types";
 
-/**
- * Checks if a proposed slab range overlaps with any existing slab.
- *
- * @param proposed - The new slab's min/max range
- * @param existing - Array of existing slabs to check against
- * @returns The first overlapping slab, or null if no overlap
- */
 function findOverlap(
   proposed: { min_units: number; max_units: number | null },
   existing: IncentiveSlab[]
@@ -53,13 +46,6 @@ function findOverlap(
   return null;
 }
 
-/**
- * GET /api/slabs
- *
- * Returns all incentive slabs ordered by min_units ascending.
- * Accessible to any authenticated user (officers need slabs for
- * their incentive dashboard calculations).
- */
 export async function GET() {
   try {
     const { supabase, user } = await getAuthenticatedUser();
@@ -78,16 +64,6 @@ export async function GET() {
   }
 }
 
-/**
- * POST /api/slabs
- *
- * Creates a new incentive slab. Admin only.
- * Validates:
- *   - min_units >= 1
- *   - max_units > min_units (if provided)
- *   - incentive_per_unit > 0
- *   - No overlap with existing slabs
- */
 export async function POST(request: NextRequest) {
   try {
     const { supabase, user } = await getAuthenticatedUser();

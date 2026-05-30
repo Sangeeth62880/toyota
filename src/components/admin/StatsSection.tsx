@@ -1,10 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
-import { Car, Users, TrendingUp, Award } from "lucide-react";
+import { Car, Users, TrendingUp } from "lucide-react";
 
-/**
- * Pulse Loader Skeleton for Stats Cards.
- * Renders 4 mock cards matching the brand layout.
- */
 export function StatsSkeleton() {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 animate-pulse">
@@ -22,27 +18,14 @@ export function StatsSkeleton() {
   );
 }
 
-/**
- * StatsSection Administrative Component.
- *
- * Fetches dashboard metadata in parallel:
- * - Active car models counts
- * - Officer counts
- * - Current month sales figures
- * - Identifies highest-performing sales officer
- *
- * Renders data metrics inside clean grid-aligned cards with Toyota red highlights.
- */
 export default async function StatsSection() {
   const supabase = await createClient();
 
-  // Compute current month first-day string "YYYY-MM-01"
   const now = new Date();
   const year = now.getFullYear();
   const month = String(now.getMonth() + 1).padStart(2, "0");
   const monthString = `${year}-${month}-01`;
 
-  // Parallel promise executions preventing query cascades
   const modelsPromise = supabase
     .from("car_models")
     .select("id", { count: "exact", head: true })
@@ -70,12 +53,10 @@ export default async function StatsSection() {
     rolesPromise,
   ]);
 
-  // Aggregate metrics
   const activeModelsCount = modelsRes.count || 0;
   const officersCount = officersRes.count || 0;
   const totalSales = salesRes.data?.reduce((acc, s) => acc + s.units_sold, 0) || 0;
 
-  // Aggregate top officer details
   const officerSalesMap: Record<string, number> = {};
   salesRes.data?.forEach((entry) => {
     officerSalesMap[entry.officer_id] =
@@ -121,12 +102,10 @@ export default async function StatsSection() {
             key={idx}
             className="bg-white border border-[#E5E5E5] p-6 flex flex-col justify-center min-h-[148px] transition-all duration-200 hover:-translate-y-[2px] hover:shadow-md border-b-2 border-b-[#E5E5E5] rounded-[4px]"
           >
-            {/* Top Value Display */}
             <h2 className="font-sans font-extrabold text-[#0A0A0A] leading-tight tracking-tight text-[36px]">
               {stat.value}
             </h2>
 
-            {/* Bottom Gray Labeling */}
             <p className="font-sans font-bold text-[14px] text-[#555555] uppercase tracking-wider leading-none mt-2">
               {stat.label}
             </p>
@@ -134,30 +113,25 @@ export default async function StatsSection() {
         );
       })}
 
-      {/* Fourth Card: Top Officer (Styled to match the structure and font sizes of other cards) */}
       <div className="bg-white border border-[#E5E5E5] p-6 flex flex-col justify-center min-h-[148px] transition-all duration-200 hover:-translate-y-[2px] hover:shadow-md border-b-2 rounded-[4px] border-b-[#E5E5E5]">
         {topOfficerId && maxUnits > 0 ? (
           <>
-            {/* Top Value Display */}
             <h2
               className="font-sans font-extrabold text-[#0A0A0A] leading-tight tracking-tight text-[28px] truncate w-full"
               title={topOfficerName}
             >
               {topOfficerName}
             </h2>
-            {/* Below Name */}
             <p className="font-sans font-normal text-[18px] text-[#555555] mt-1.5 leading-none">
               ({maxUnits} units)
             </p>
           </>
         ) : (
-          /* Top Value Display if no sales */
           <h2 className="font-sans font-extrabold text-[#0A0A0A] leading-tight tracking-tight text-[36px]">
             —
           </h2>
         )}
 
-        {/* Bottom Gray Labeling */}
         <p className="font-sans font-bold text-[14px] text-[#555555] uppercase tracking-wider leading-none mt-2">
           Top Officer
         </p>
