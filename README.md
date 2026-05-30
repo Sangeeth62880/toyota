@@ -3,7 +3,7 @@
 
 ## Live Demo
 <!-- TODO: Replace with actual deployed URL and GitHub repo URL -->
-[Live URL Placeholder](https://toyota-incentive-portal.vercel.app) · [GitHub Repository Placeholder](https://github.com/nippon-toyota/incentive-calculator)
+[Live Deployment URL ](toyota-phi-dun.vercel.app)
 
 ---
 
