@@ -28,17 +28,17 @@ flowchart TD
     end
 
     subgraph NextJS["Next.js Server"]
-        MW["Middleware\n(Auth + Role Check)"]
-        API["API Routes\n/api/cars\n/api/slabs\n/api/sales/bulk\n/api/officers"]
-        Admin -- "HTTP request" --> MW
-        Officer -- "HTTP request" --> MW
-        MW -- "admin only" --> API
-        MW -- "officer only" --> API
+        MW["Middleware\n(Auth + Role Check)\nRedirects unauthenticated users"]
+        API["API Routes\n/api/cars · /api/slabs\n/api/sales/bulk · /api/officers\n(Role verified per route)"]
+        Admin -- "page navigation" --> MW
+        Officer -- "page navigation" --> MW
+        Admin -- "HTTP request" --> API
+        Officer -- "HTTP request" --> API
     end
 
     subgraph Supabase["Supabase"]
         RLS["Row Level Security"]
-        DB["PostgreSQL\ncar_models\nincentive_slabs\nsales_entries\nuser_roles"]
+        DB["PostgreSQL\ncar_models · incentive_slabs\nsales_entries · user_roles"]
         API --> RLS
         RLS --> DB
     end
