@@ -57,7 +57,7 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
+        sans: ["ToyotaType-Regular", "toyota_displayregular", "Inter", "ui-sans-serif", "system-ui", "sans-serif"],
       },
       borderRadius: {
         lg: "var(--radius)",

@@ -184,7 +184,7 @@ export default function LoginPage() {
         className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform scale-105"
         style={{
           backgroundImage:
-            "url('/login-bg.jpg')",
+            "url('/toyota.jpg')",
           transitionDuration: "10000ms",
         }}
       />
